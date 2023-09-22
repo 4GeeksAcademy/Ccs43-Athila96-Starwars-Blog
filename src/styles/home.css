@@ -2,3 +2,9 @@
   display: flex;
   overflow-x: scroll;
 }
+.logo {
+  width: 100px;
+}
+.adentro {
+  word-wrap: break-word;
+}

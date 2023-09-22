@@ -15,6 +15,8 @@ const getState = ({ getStore, getActions, setStore }) => {
       ],
       people: [],
       planets: [],
+      vehicles: [],
+      favorites: [],
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -41,6 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         setStore({ demo: demo });
       },
 
+      // TRAE INFORMACION DE LOS PLANETAS
       getPlanets: async () => {
         const store = getStore();
         const url = "https://www.swapi.tech/api/planets/";
@@ -55,13 +58,15 @@ const getState = ({ getStore, getActions, setStore }) => {
               let responseJason = await responseElement.json();
               /* console.log(responseJason.result.properties); */
               setStore({ planets: [...store.planets, responseJason.result] });
-              console.log(store.planets);
+              /* console.log(store.planets); */
             });
           }
         } catch (error) {
           console.log("Error al solicitar la informacion: ", error);
         }
       },
+
+      // TRAE INFORMACION DE LOS PERSONAJES
       getPeople: async () => {
         const store = getStore();
         const url = "https://www.swapi.tech/api/people/";
@@ -76,12 +81,51 @@ const getState = ({ getStore, getActions, setStore }) => {
               let responseJason = await responseElement.json();
               /* console.log(responseJason.result.properties); */
               setStore({ people: [...store.people, responseJason.result] });
-              /*   console.log(store.people); */
+              /* console.log(store.people); */
             });
           }
         } catch (error) {
           console.log("Error al solicitar la informacion: ", error);
         }
+      },
+
+      // TRAE INFORMACION DE LOS VEHICULOS
+      getVehicle: async () => {
+        const store = getStore();
+        const url = "https://www.swapi.tech/api/vehicles/";
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+          });
+          if (response.ok) {
+            const body = await response.json();
+            body.results.forEach(async (element) => {
+              let responseElement = await fetch(url + element.uid);
+              let responseJason = await responseElement.json();
+              /* console.log(responseJason.result.properties); */
+              setStore({ vehicles: [...store.vehicles, responseJason.result] });
+              /* console.log(store.vehicles); */
+            });
+          }
+        } catch (error) {
+          console.log("Error al solicitar la informacion: ", error);
+        }
+      },
+
+      favorite: (favoritos) => {
+        const store = getStore();
+        if (store.favorites.includes(favoritos) == false) {
+          setStore({ favorites: [...store.favorites, favoritos] });
+          return;
+        }
+      },
+
+      DeleteFavorite: (favorito) => {
+        const store = getStore();
+        const favoritos = store.favorites.filter((elemento) => {
+          return favorito !== elemento;
+        });
+        setStore({ favorites: favoritos });
       },
     },
   };
